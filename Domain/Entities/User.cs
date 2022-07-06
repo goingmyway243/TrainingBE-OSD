@@ -14,5 +14,23 @@ namespace Domain.Entities
 
         public List<ProjectMember> ProjectMembers { get; set; }
         public List<Task> AssignedTasks { get; set; }
+
+        public bool Login(string email, string password)
+        {
+            return Email == email && Password == password;
+        }
+
+        public override void Validate()
+        {
+            if (Email == null || Email == "")
+            {
+                throw new Exception("Email cannot be empty");
+            }
+
+            if (Password == null || Password == "")
+            {
+                throw new Exception("Password cannot be empty");
+            }
+        }
     }
 }

@@ -20,20 +20,46 @@ namespace Domain.Entities
         public string Description { get; set; }
         public StatusType Status { get; set; }
         public Guid ProjectId { get; set; }
-        public Guid AssignedUserId { get; private set; }
+        public Guid? AssignedUserId { get; private set; }
 
         public Project Project { get; set; }
-        public User AssignedUser{ get; private set; }
+        public User AssignedUser { get; private set; }
+
+        public User GetProjectOwner()
+        {
+            return Project
+                .ProjectMembers
+                .FirstOrDefault(member => member.MemberRole == ProjectMember.Role.Owner)
+                .User;
+        }
 
         public void Assign(User userToAssign)
         {
-            if(Status == StatusType.Finished)
+            if (AssignedUserId != null && AssignedUserId != GetProjectOwner().Id)
+            {
+                throw new Exception("Project member cannot assign to assigned tasks in the project");
+            }
+
+            if (Status == StatusType.Finished)
             {
                 throw new Exception("The task cannot be assigned to others members when it's Finished");
             }
 
-            AssignedUserId = userToAssign.Id;
+            SetAssignedUser(userToAssign);
+        }
+
+        private void SetAssignedUser(User userToAssign)
+        {
             AssignedUser = userToAssign;
+            AssignedUserId = AssignedUser.Id;
+        }
+
+        public override void Validate()
+        {
+            if(Name == null || Name == "")
+            {
+                throw new Exception("Name cannot be empty");
+            }
         }
     }
 }

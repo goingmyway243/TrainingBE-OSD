@@ -14,5 +14,13 @@ namespace Domain.Entities
 
         public List<ProjectMember> ProjectMembers { get; set; }
         public List<Task> Tasks { get; set; }
+
+        public override void Validate()
+        {
+            if (Name == null || Name == "")
+            {
+                throw new Exception("Name cannot be empty");
+            }
+        }
     }
 }
