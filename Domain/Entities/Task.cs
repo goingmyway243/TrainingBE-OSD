@@ -1,13 +1,14 @@
 ﻿using Domain.Entities.Base;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    class Task : BaseEntity<Guid>
+    public class Task : BaseEntity<Guid>
     {
         public enum StatusType
         {
@@ -48,18 +49,30 @@ namespace Domain.Entities
             SetAssignedUser(userToAssign);
         }
 
+        public void UpdateStatus(StatusType status, User auditUser)
+        {
+            if(auditUser.Id != AssignedUserId)
+            {
+                throw new Exception("Only the task assignee can update task status");
+            }
+
+            Status = status;
+        }
+
+        public override ValidationResult Validate()
+        {
+            if(string.IsNullOrEmpty(Name))
+            {
+                return new ValidationResult("Name cannot be empty");
+            }
+
+            return ValidationResult.Success;
+        }
+
         private void SetAssignedUser(User userToAssign)
         {
             AssignedUser = userToAssign;
             AssignedUserId = AssignedUser.Id;
-        }
-
-        public override void Validate()
-        {
-            if(Name == null || Name == "")
-            {
-                throw new Exception("Name cannot be empty");
-            }
         }
     }
 }

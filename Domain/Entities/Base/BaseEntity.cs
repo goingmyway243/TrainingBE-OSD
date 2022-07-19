@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,6 @@ namespace Domain.Entities.Base
         public DateTime CreatedTime { get; set; }
         public DateTime UpdatedTime { get; set; }
 
-        public abstract void Validate(); 
+        public abstract ValidationResult Validate(); 
     }
 }

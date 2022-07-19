@@ -1,13 +1,14 @@
 ﻿using Domain.Entities.Base;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    class ProjectMember : BaseEntity<Guid>
+    public class ProjectMember : BaseEntity<Guid>
     {
         public enum Role
         {
@@ -23,17 +24,17 @@ namespace Domain.Entities
         public User User { get; set; }
         public Project Project { get; set; }
 
-        public void Accept()
+        public void Reply(bool isAccepted)
         {
             if (MemberRole == Role.Pending)
             {
-                MemberRole = Role.Member;
+                MemberRole = isAccepted ? Role.Member : Role.Rejected;
             }
         }
 
-        public override void Validate()
+        public override ValidationResult Validate()
         {
-            throw new NotImplementedException();
+            return ValidationResult.Success;
         }
     }
 }

@@ -1,13 +1,14 @@
 ﻿using Domain.Entities.Base;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    class Project : BaseEntity<Guid>
+    public class Project : BaseEntity<Guid>
     {
         public string Name { get; set; }
         public string Description { get; set; }
@@ -15,12 +16,14 @@ namespace Domain.Entities
         public List<ProjectMember> ProjectMembers { get; set; }
         public List<Task> Tasks { get; set; }
 
-        public override void Validate()
+        public override ValidationResult Validate()
         {
-            if (Name == null || Name == "")
+            if(string.IsNullOrEmpty(Name))
             {
-                throw new Exception("Name cannot be empty");
+                return new ValidationResult("Name cannot be empty");
             }
+
+            return ValidationResult.Success;
         }
     }
 }

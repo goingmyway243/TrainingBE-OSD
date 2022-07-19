@@ -1,13 +1,14 @@
 ﻿using Domain.Entities.Base;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    class User : BaseEntity<Guid>
+    public class User : BaseEntity<Guid>
     {
         public string Email { get; set; }
         public string Password { get; set; }
@@ -20,17 +21,19 @@ namespace Domain.Entities
             return Email == email && Password == password;
         }
 
-        public override void Validate()
+        public override ValidationResult Validate()
         {
-            if (Email == null || Email == "")
+            if (string.IsNullOrEmpty(Email))
             {
-                throw new Exception("Email cannot be empty");
+                return new ValidationResult("Email cannot be empty");
             }
 
-            if (Password == null || Password == "")
+            if (string.IsNullOrEmpty(Password))
             {
-                throw new Exception("Password cannot be empty");
+                return new ValidationResult("Password cannot be empty");
             }
+
+            return ValidationResult.Success;
         }
     }
 }
